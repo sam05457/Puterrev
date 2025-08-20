@@ -29,6 +29,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel, Field
+import os
 
 try:
     from .config import (
@@ -381,11 +382,9 @@ async def raw(req: Request):
 if __name__ == "__main__":
     try:
         import uvicorn
-        host = SERVER_CONFIG.get("host", "0.0.0.0")
-        port = int(SERVER_CONFIG.get("port", 8781))
+        host = os.getenv("HOST", SERVER_CONFIG.get("host", "0.0.0.0"))
+        port = int(os.getenv("PORT", SERVER_CONFIG.get("port", 7860)))
         logger.info(f"Starting Puter Reverse API on {host}:{port}")
         uvicorn.run(app, host=host, port=port, log_level="info")
     except Exception as e:
         logger.error(f"Failed to start server: {e}")
-
-
